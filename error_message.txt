@@ -1,0 +1,18 @@
+resource-locked -> wallet masih atau dikunci oleh proses lain
+key-forbidden -> sudah minta lock, tetapi key lock ter override oleh proses lain
+mungkin sudah ada transaksi yang dijalankan, key lock data dengan key dari proses berbeda, perlu di rollback
+
+not-found -> data tidak ada, langsung di fail
+
+
+semua chain promise terakhir di resolve dengan true kecuali get balance
+setiap akhir chain promise yang menggunakan lock harus melakukan broadcast untuk pending transaksi id wallet yang di lock
+
+broadcast proses akan dilakukan dari service unlocks
+
+jika terjadi error, pelepasan lock dilakukan dari operasi rollback
+semua operasi yang menggunakan operasi write harus ada rollback
+
+pengeditan data untuk visualisasi dilakukan dari
+- service lock untuk status lock
+- balance-manager untuk semua yang berhubungan dengan perubahan balance
