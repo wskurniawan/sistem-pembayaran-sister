@@ -67,7 +67,7 @@ module.exports.transfer = function(from_wallet_id, to_wallet_id, amount){
             ROLLBACK.transfer.release_lock(to_wallet_id, key);
             //add ke pending state
             
-            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, key);
+            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, key, message);
          } else if (message === 'key-forbidden') {
             console.log(key);
             //lepaskan lock yang mungkin sudah didapat
@@ -75,7 +75,7 @@ module.exports.transfer = function(from_wallet_id, to_wallet_id, amount){
             ROLLBACK.transfer.release_lock(to_wallet_id, key);
             //add ke pending state
             
-            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, key);
+            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, key, message);
          } else if (message === 'insufficient-balance') {
             //lepaskan lock
             ROLLBACK.transfer.release_lock(from_wallet_id, key);

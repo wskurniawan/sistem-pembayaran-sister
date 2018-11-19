@@ -1,3 +1,4 @@
+const jsonfile = require('jsonfile');
 
 const PENDING_TRANSACTION = require('./../transaction/pending-transaction');
 const realtime_db = require('firebase-admin').database();
@@ -80,6 +81,7 @@ module.exports.unlock = function(id_wallet, key){
 
          resolve(result);
       }).catch(error => {
+         write_log({ error: error.message });
          reject(error);
       });
    });
@@ -94,5 +96,15 @@ function update_wallet_lock(id_wallet, lock_status, key){
       console.log('update realtime db berhasil');
    }).catch(error => {
       console.log(error);
+   });
+}
+
+//writelog
+function write_log(data){
+   var path = __dirname  + '/log/error' + Date.now() + '.json';
+   jsonfile.writeFile(path, data, function(err){
+      if(err){
+         console.log(err);
+      }
    });
 }

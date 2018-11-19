@@ -1,0 +1,3 @@
+applications:
+- name: pembayaran
+  memory: 512M

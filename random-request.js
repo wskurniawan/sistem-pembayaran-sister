@@ -1,6 +1,8 @@
 const axios = require('axios').default;
 
-const HOST = 'http://127.0.0.1:5003';
+const HOST = 'https://pembayaran.au-syd.mybluemix.net';
+
+//'http://127.0.0.1:5003';
 
 var list_account = [];
 var list_transaction = ['deposit', 'get-balance', 'withdraw', 'transfer'];
@@ -50,7 +52,9 @@ function random_request(){
          var to = list_account[user_index].id;
          var amount = Math.floor(Math.random() * 500);
 
-         transfer(from, to, amount);
+         if(from != to){
+            transfer(from, to, amount);
+         }
       }else{
          console.log(transaction);
       }

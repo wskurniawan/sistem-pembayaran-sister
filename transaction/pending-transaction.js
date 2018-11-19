@@ -47,11 +47,11 @@ module.exports.pending_withdraw = function(id_wallet, amount){
    });
 }
 
-module.exports.pending_transfer = function(first_wallet_id, second_wallet_id, amount, key){
+module.exports.pending_transfer = function(first_wallet_id, second_wallet_id, amount, key, why){
    if(first_wallet_id === second_wallet_id){
       return; 
    }
-   
+
    var pending_data = {
       type: 'transfer',
       requesting_user_id: first_wallet_id,
@@ -62,7 +62,7 @@ module.exports.pending_transfer = function(first_wallet_id, second_wallet_id, am
    };
 
    pending_model.create(pending_data).then(result => {
-      realtime_db_insert_pending(result._id.toString(), pending_data.type, pending_data.requesting_user_id, pending_data.first_wallet_id, pending_data.second_wallet_id, pending_data.amount, pending_data.timestamp, key);
+      realtime_db_insert_pending(result._id.toString(), pending_data.type, pending_data.requesting_user_id, pending_data.first_wallet_id, pending_data.second_wallet_id, pending_data.amount, pending_data.timestamp, key, why);
       console.log('Transaksi pending ditambahkan');
    }).catch(error => {
       console.error(error);
@@ -117,8 +117,8 @@ function process_pending_transaction(id_wallet){
 }
 
 //insert ke realtime db
-function realtime_db_insert_pending(id, type, requesting_user_id, first_wallet_id, second_wallet_id, amount, timestamp, key){
-   pending_ref.child(id).set({ id, type, requesting_user_id, first_wallet_id, second_wallet_id, amount, timestamp, key}).then(() => {
+function realtime_db_insert_pending(id, type, requesting_user_id, first_wallet_id, second_wallet_id, amount, timestamp, key, why){
+   pending_ref.child(id).set({ id, type, requesting_user_id, first_wallet_id, second_wallet_id, amount, timestamp, key, why}).then(() => {
       console.log('insert realtime db berhasil');
    }).catch(error => {
       console.error(error);

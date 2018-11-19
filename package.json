@@ -17,7 +17,12 @@
     "express": "^4.16.4",
     "firebase-admin": "^6.1.0",
     "joi": "^14.0.6",
+    "jsonfile": "^5.0.0",
     "mongoose": "^5.3.12",
     "randomatic": "^3.1.1"
+  },
+  "engines": {
+    "node": "8.9.0",
+    "npm": "6.4.0"
   }
 }
