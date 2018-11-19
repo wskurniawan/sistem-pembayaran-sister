@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <title>Realtime Visualization</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.23/css/uikit.min.css" />
+   
+   <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+   <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+   <div style="padding-top: 12px;">
+      <div class="uk-flex uk-flex-center ws-grid-normal" uk-grid>
+         <!-- item card -->
+         <% list_user.forEach(function(item){ %>
+            <div class="uk-width-1-3@m uk-width-1-1@s ws-col-padding"> 
+               <div class="uk-card ws-card-default item-wallet" id="<%= item.id %>">
+                  <div class="uk-card-body">
+                     <h3 class="uk-text-center ws-name-text"><%= item.name %></h3>
+                     <h2 class="uk-text-center" style="color: white;">Rp.</h2>
+                     <div class="ws-balance-text uk-text-center" id="balance-<%= item.id %>"><%= item.balance %></div>
+                     <h3 class="uk-text-center ws-key-text" id="key-<%= item.id %>"><%= item.key %></h3>
+                  </div>
+               </div>
+            </div>
+         <% }) %>
+         <!-- end item -->
+      </div>
+   </div>
+   
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.23/js/uikit.min.js"></script>
+   
+   <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-database.js"></script>
+
+   <script src="/public/js/index.js"></script>
+</body>
+</html>

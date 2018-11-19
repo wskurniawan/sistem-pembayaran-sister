@@ -1,6 +1,7 @@
 const axios = require('axios').default;
 
-const HOST = 'https://pembayaran.au-syd.mybluemix.net';
+//const HOST = 'http://127.0.0.1:5003';
+const HOST = 'https://pembayaran.ruangkarya.id';
 
 //'http://127.0.0.1:5003';
 
@@ -23,9 +24,10 @@ function random_request(){
 
    }while(true);*/
 
-   for(var i = 0; i < 100; i++){
+   for(var i = 0; i < 10000; i++){
       var index_transaction = Math.floor(Math.random() * list_transaction.length);
       var transaction = list_transaction[index_transaction];
+      //var transaction = list_transaction[3];
       
       if(transaction === 'deposit'){
          var user_index = Math.floor(Math.random() * list_account.length);

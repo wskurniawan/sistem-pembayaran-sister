@@ -22,14 +22,32 @@ mongoose.connect(config.db_uri, function(err){
    console.log('DB connected');
 });
 
+const realtime_db = firebase.database();
+
+//ref
+const wallet_ref = realtime_db.ref('wallet');
+
 //init app
 const app = express();
 
 //init midleware
+app.set('view engine', 'ejs');
 app.use(body_parser.json());
+app.use('/public', express.static(__dirname + '/public'));
 
 app.get('/', function(req, res, next){
-   res.send('ok');
+   wallet_ref.once('value').then(result => {
+      var list_document = [];
+      var list_data = result.val();
+      for(key in list_data){
+         list_document.push(list_data[key]);
+      }
+
+      console.log(list_document);
+      res.render('index', {list_user: list_document});
+   }).catch(error => {
+      next(error);
+   });
 });
 
 //routes

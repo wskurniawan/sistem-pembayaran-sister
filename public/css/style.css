@@ -1,0 +1,41 @@
+.ws-grid-normal{
+   margin-left: 0px;
+}
+
+.ws-card-default{
+   background: #009688;
+   color: white;
+}
+
+.ws-col-normal{
+   padding-left: 0px;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, span{
+   font-family: 'Poppins', sans-serif;
+}
+
+.ws-name-text{
+   text-transform: uppercase;
+   font-size: 14px;
+   font-weight: bold;
+   color: inherit;
+}
+
+.ws-balance-text{
+   text-transform: uppercase;
+   font-size: 32px;
+   font-weight: bold;
+   color: inherit;
+}
+
+.ws-key-text{
+   text-transform: uppercase;
+   font-size: 12px;
+   font-weight: bold;
+   color: inherit;
+}
+
+.ws-col-padding{
+   padding: 18px;
+}

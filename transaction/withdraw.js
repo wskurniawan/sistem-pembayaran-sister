@@ -6,7 +6,7 @@ const BALANCE_MANAGER = require('./balance-manager');
 const PENDING_TRANSACTION = require('./pending-transaction');
 const ROLLBACK = require('./rollback');
 
-module.exports.withdraw = function(id_wallet, amount){
+module.exports.withdraw = function(id_wallet, amount, id_transaction){
    return new Promise((resolve, reject) => {
       var key = randomatic('A0AAAAAAAAA0') + '-' + Date.now() + '-WITHDRAW';
       var wallet_balance_initial_state = 0;
@@ -42,10 +42,10 @@ module.exports.withdraw = function(id_wallet, amount){
 
          if (message === 'resource-locked') {
             //add ke pending state
-            PENDING_TRANSACTION.pending_withdraw(id_wallet, amount);
+            PENDING_TRANSACTION.pending_withdraw(id_wallet, amount, id_transaction);
          } else if (message === 'key-forbidden') {
             //add ke pending state
-            PENDING_TRANSACTION.pending_withdraw(id_wallet, amount);
+            PENDING_TRANSACTION.pending_withdraw(id_wallet, amount, id_transaction);
          } else if (message === 'insufficient-balance') {
             //balance tidak cukup, fail tidak perlu lakukan apa2
          } else{

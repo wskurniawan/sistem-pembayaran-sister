@@ -81,11 +81,43 @@ module.exports.unlock = function(id_wallet, key){
 
          resolve(result);
       }).catch(error => {
-         write_log({ error: error.message });
+         //write_log({ error: error.message });
          reject(error);
       });
    });
 }
+
+//khusus untuk transfer
+module.exports.unlock_by_key = function(first_id_wallet, second_id_wallet, key){
+   return new Promise((resolve, reject) => {
+      var update_lock = {
+         lock: false,
+         key: ''
+      };
+
+      WalletModel.updateMany({key: key}, { $set: update_lock }).then(result => {
+         console.log(result);
+         return this.is_locked(first_id_wallet);
+      }).then(lock_status => {
+         if(!lock_status){
+            update_wallet_lock(first_id_wallet, false, '');
+            PENDING_TRANSACTION.broadcast_free_lock(first_id_wallet);
+         }
+
+         return this.is_locked(second_id_wallet);
+      }).then(lock_status => {
+         if(!lock_status){
+            update_wallet_lock(second_id_wallet, false, '');
+            PENDING_TRANSACTION.broadcast_free_lock(second_id_wallet);
+         }
+
+         //selesai
+         resolve(true);
+      }).catch(error => {
+         reject(error);
+      });
+   });
+};
 
 //untuk realtime db
 function update_wallet_lock(id_wallet, lock_status, key){

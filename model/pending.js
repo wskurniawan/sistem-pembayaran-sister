@@ -6,7 +6,8 @@ const Schema = mongoose.Schema({
    first_wallet_id: String,
    second_wallet_id: String,
    amount: Number,
-   timestamp: Date
+   timestamp: Date,
+   id_transaction: String
 });
 
 module.exports = mongoose.model('pending', Schema);

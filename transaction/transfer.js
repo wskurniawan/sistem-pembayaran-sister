@@ -6,13 +6,14 @@ const BALANCE_MANAGER = require('./balance-manager');
 const ROLLBACK = require('./rollback');
 const PENDING_TRANSACTION = require('./pending-transaction');
 
-module.exports.transfer = function(from_wallet_id, to_wallet_id, amount){
+module.exports.transfer = function(from_wallet_id, to_wallet_id, amount, id_transaction){
    return new Promise((resolve, reject) => {
       var key = randomatic('A0AAAAAAAAA0') + '-' + Date.now() + '-TRANSFER';
+
       var from_wallet_initial_balance = 0;
       var to_wallet_initial_balance = 0;
 
-      if(from_wallet_id === to_wallet_id){
+      if(from_wallet_id == to_wallet_id){
          throw new Error('same-id');
       }
 
@@ -29,10 +30,10 @@ module.exports.transfer = function(from_wallet_id, to_wallet_id, amount){
          }
 
          //minta akses kunci wallet pertama
-         LOCK.lock(from_wallet_id, key);
+         return LOCK.lock(from_wallet_id, key);
       }).then(result => {
          //minta akses kunci wallet kedua
-         LOCK.lock(to_wallet_id, key);
+         return LOCK.lock(to_wallet_id, key);
       }).then(result => {
          //get from initial balance
          return BALANCE_MANAGER.get_balance(from_wallet_id, key);
@@ -50,10 +51,7 @@ module.exports.transfer = function(from_wallet_id, to_wallet_id, amount){
          return BALANCE_MANAGER.add_balance(to_wallet_id, amount, key);
       }).then(result => {
          //operasi selesai,lepas lock wallet pertama
-         return LOCK.unlock(from_wallet_id, key);
-      }).then(result => {
-         //lepas lock wallet kedua
-         return LOCK.unlock(to_wallet_id, key);
+         return LOCK.unlock_by_key(from_wallet_id, to_wallet_id, key);
       }).then(result => {
          //resolve
 
@@ -63,29 +61,41 @@ module.exports.transfer = function(from_wallet_id, to_wallet_id, amount){
 
          if (message === 'resource-locked') {
             //lepaskan lock yang mungkin sudah didapat
-            ROLLBACK.transfer.release_lock(from_wallet_id, key);
-            ROLLBACK.transfer.release_lock(to_wallet_id, key);
+            LOCK.unlock_by_key(from_wallet_id, to_wallet_id, key).then(result => {
+               console.log('succes');
+            }).catch(error => {
+               console.log(error);
+            })
             //add ke pending state
             
-            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, key, message);
+            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, id_transaction);
          } else if (message === 'key-forbidden') {
-            console.log(key);
             //lepaskan lock yang mungkin sudah didapat
-            ROLLBACK.transfer.release_lock(from_wallet_id, key);
-            ROLLBACK.transfer.release_lock(to_wallet_id, key);
+            LOCK.unlock_by_key(from_wallet_id, to_wallet_id, key).then(result => {
+               console.log('succes');
+            }).catch(error => {
+               console.log(error);
+            })
             //add ke pending state
             
-            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, key, message);
+            PENDING_TRANSACTION.pending_transfer(from_wallet_id, to_wallet_id, amount, id_transaction);
          } else if (message === 'insufficient-balance') {
             //lepaskan lock
-            ROLLBACK.transfer.release_lock(from_wallet_id, key);
-            ROLLBACK.transfer.release_lock(to_wallet_id, key);
+            LOCK.unlock_by_key(from_wallet_id, to_wallet_id, key).then(result => {
+               console.log('succes');
+            }).catch(error => {
+               console.log(error);
+            })
          }else if (message === 'same-id'){
             //tidak melakukan apa2
-            ROLLBACK.transfer.release_lock(from_wallet_id, key);
+            LOCK.unlock_by_key(from_wallet_id, to_wallet_id, key).then(result => {
+               console.log('succes');
+            }).catch(error => {
+               console.log(error);
+            });
          } else{
             //error lainnya, transaksi tidak di pending, langsung fail, harus rollback
-            ROLLBACK.transfer.reset(from_wallet_id, from_wallet_initial_balance, to_wallet_id, to_wallet_initial_balance);
+            ROLLBACK.transfer.reset(from_wallet_id, from_wallet_initial_balance, to_wallet_id, to_wallet_initial_balance, key);
          }
 
          reject(error);

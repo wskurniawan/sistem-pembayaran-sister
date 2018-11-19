@@ -4,7 +4,7 @@ const balance_manager = require('./balance-manager');
 const pending_transaction = require('./pending-transaction');
 const rollback = require('./rollback');
 
-module.exports.deposit = function (id_wallet, amount) {
+module.exports.deposit = function (id_wallet, amount, id_transaction) {
    return new Promise((resolve, reject) => {
       var key = randomatic('A0AAAAAAAAA0') + '-' + Date.now() + '-DEPOSIT';
       var wallet_balance_initial_state = 0;
@@ -36,10 +36,10 @@ module.exports.deposit = function (id_wallet, amount) {
 
          if (message === 'resource-locked') {
             //add ke pending state
-            pending_transaction.pending_deposit(id_wallet, amount);
+            pending_transaction.pending_deposit(id_wallet, amount, id_transaction);
          } else if (message === 'key-forbidden') {
             //add ke pending state
-            pending_transaction.pending_deposit(id_wallet, amount);
+            pending_transaction.pending_deposit(id_wallet, amount, id_transaction);
          } else{
             //error lainnya, transaksi tidak di pending, langsung fail, harus rollback
             rollback.rollback_deposit(id_wallet, wallet_balance_initial_state).then(result => {

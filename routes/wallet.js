@@ -102,8 +102,9 @@ Wallet.post('/deposit', function(req, res, next){
 }, function(req, res, next){
    var id_wallet = req.body.id_wallet;
    var amount = parseInt(req.body.amount);
+   var id_transaction = 'deposit-' + Date.now();
 
-   DEPOSIT.deposit(id_wallet, amount).then(result => {
+   DEPOSIT.deposit(id_wallet, amount, id_transaction).then(result => {
       res.send({
          succes: true
       });
@@ -163,8 +164,9 @@ Wallet.get('/all/detail-balance', function(req, res, next){
 Wallet.get('/:id_wallet/withdraw/:amount', function(req, res, next){
    var id_wallet = req.params.id_wallet;
    var amount = parseInt(req.params.amount);
+   var id_transaction = 'withdraw-' + Date.now();
 
-   WITHDRAW.withdraw(id_wallet, amount).then(result => {
+   WITHDRAW.withdraw(id_wallet, amount, id_transaction).then(result => {
       res.send({
          succes: true
       });
@@ -189,6 +191,7 @@ Wallet.post('/transfer', function(req, res, next){
    var from_wallet_id = req.body.from;
    var to_wallet_id = req.body.to;
    var amount = parseInt(req.body.amount);
+   var id_transaction = 'transfer-' + Date.now();
 
    if(from_wallet_id === to_wallet_id){
       return res.send({
@@ -197,7 +200,7 @@ Wallet.post('/transfer', function(req, res, next){
       });
    }
 
-   TRANSFER.transfer(from_wallet_id, to_wallet_id, amount).then(result => {
+   TRANSFER.transfer(from_wallet_id, to_wallet_id, amount, id_transaction).then(result => {
       res.send({
          succes: true
       });

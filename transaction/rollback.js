@@ -36,20 +36,19 @@ module.exports.transfer = {
          console.error(error);
       });
    },
-   reset: function(from_id_wallet, from_initial_balance, for_id_wallet, for_initial_balance){
+   reset: function(from_id_wallet, from_initial_balance, for_id_wallet, for_initial_balance, key){
       reset_wallet(from_id_wallet, from_initial_balance).then(result => {
 
          return reset_wallet(for_id_wallet, for_initial_balance);
       }).then(result => {
-         return LOCK.unlock(from_id_wallet, key);
-      }).then(result => {
-         return LOCK.unlock(for_id_wallet, key);
+         return LOCK.unlock_by_key(from_id_wallet, for_id_wallet, key);
       }).then(result => {
          console.log('berhasil reset balance');
       }).catch(error => {
          //jika error lock harus dilepas
-         this.release_lock(from_id_wallet, key);
-         this.release_lock(for_id_wallet, key);
+         LOCK.unlock_by_key(from_id_wallet, for_id_wallet, key).then(result => {
+            console.log('release lock succes');
+         })
          console.log(error);
       })
    }
