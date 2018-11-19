@@ -6,7 +6,7 @@ const rollback = require('./rollback');
 
 module.exports.deposit = function (id_wallet, amount) {
    return new Promise((resolve, reject) => {
-      var key = randomatic('A0AAAAAAAAA0') + '-' + Date.now();
+      var key = randomatic('A0AAAAAAAAA0') + '-' + Date.now() + '-DEPOSIT';
       var wallet_balance_initial_state = 0;
 
       LOCK.is_locked(id_wallet).then(result => {

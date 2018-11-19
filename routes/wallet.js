@@ -15,6 +15,8 @@ const LogModel = require('./../model/log');
 //transaction
 const DEPOSIT = require('./../transaction/deposit');
 const BALANCE_MANAGER = require('./../transaction/balance-manager');
+const WITHDRAW = require('./../transaction/withdraw');
+const TRANSFER = require('./../transaction/transfer');
 
 //base: /wallet
 Wallet.post('/create', function(req, res, next){
@@ -153,6 +155,52 @@ Wallet.get('/all/detail-balance', function(req, res, next){
       return Promise.resolve(final_list);
    }).then(list_wallet => {
       res.send(list_wallet);
+   }).catch(error => {
+      next(error);
+   });
+});
+
+Wallet.get('/:id_wallet/withdraw/:amount', function(req, res, next){
+   var id_wallet = req.params.id_wallet;
+   var amount = parseInt(req.params.amount);
+
+   WITHDRAW.withdraw(id_wallet, amount).then(result => {
+      res.send({
+         succes: true
+      });
+   }).catch(error => {
+      next(error);
+   })
+});
+
+Wallet.post('/transfer', function(req, res, next){
+   const Schema = JOI.object().keys({
+      from: JOI.string().required(),
+      to: JOI.string().required(),
+      amount: JOI.number().required()
+   });
+
+   JOI.validate(req.body, Schema).then(result => {
+      next();
+   }).catch(error => {
+      next(error);
+   });
+}, function(req, res, next){
+   var from_wallet_id = req.body.from;
+   var to_wallet_id = req.body.to;
+   var amount = parseInt(req.body.amount);
+
+   if(from_wallet_id === to_wallet_id){
+      return res.send({
+         succes: false,
+         message: 'tidak bisa transfer ke diri sendiri'
+      });
+   }
+
+   TRANSFER.transfer(from_wallet_id, to_wallet_id, amount).then(result => {
+      res.send({
+         succes: true
+      });
    }).catch(error => {
       next(error);
    });

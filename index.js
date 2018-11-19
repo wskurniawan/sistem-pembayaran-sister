@@ -52,7 +52,13 @@ app.use(function(err, req, res, next){
          succes: true,
          status: 'pending'
       });
-   } else{
+   } else if (message === 'insufficient-balance') {
+      //balance tidak cukup
+      res.send({
+         succes: false,
+         message: 'saldo tidak cukup'
+      });
+   }else{
       //error lainnya, transaksi tidak di pending, langsung fail, harus rollback
       res.status(500).send({
          succes: false,

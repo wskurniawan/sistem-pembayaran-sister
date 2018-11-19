@@ -4,6 +4,9 @@ mungkin sudah ada transaksi yang dijalankan, key lock data dengan key dari prose
 
 not-found -> data tidak ada, langsung di fail
 
+insufficient-balance -> saldo tidak cukup
+jika pada operasi withdraw -> langsung fail, lepas lock
+
 
 semua chain promise terakhir di resolve dengan true kecuali get balance
 setiap akhir chain promise yang menggunakan lock harus melakukan broadcast untuk pending transaksi id wallet yang di lock
@@ -16,3 +19,10 @@ semua operasi yang menggunakan operasi write harus ada rollback
 pengeditan data untuk visualisasi dilakukan dari
 - service lock untuk status lock
 - balance-manager untuk semua yang berhubungan dengan perubahan balance
+
+
+tahapan transaksi
+1. cek status lock
+2. minta akses lock
+3. mulai transaksi
+4. lepaskan lock

@@ -9,6 +9,56 @@ Rollback masih menggunakan chain promise, kecuali untuk pelepasan lock
 
 module.exports.rollback_deposit = function(id_wallet, wallet_initial_balance, key){
    return new Promise((resolve, reject) => {
+      reset_wallet(id_wallet, wallet_initial_balance, key).then(result => {
+         resolve(result);
+      }).catch(error => {
+         reject(error);
+      });
+   });
+};
+
+
+module.exports.rollback_withdraw = function(id_wallet, balance_state, key){
+   return new Promise((resolve, reject) => {
+      reset_wallet(id_wallet, balance_state, key).then(result => {
+         resolve(result);
+      }).reject(error => {
+         reject(error);
+      });
+   });
+};
+
+module.exports.transfer = {
+   release_lock: function(id_wallet, key){
+      LOCK.unlock(id_wallet, key).then(result => {
+         console.log('release lock sukses');
+      }).catch(error => {
+         console.error(error);
+      });
+   },
+   reset: function(from_id_wallet, from_initial_balance, for_id_wallet, for_initial_balance){
+      reset_wallet(from_id_wallet, from_initial_balance).then(result => {
+
+         return reset_wallet(for_id_wallet, for_initial_balance);
+      }).then(result => {
+         return LOCK.unlock(from_id_wallet, key);
+      }).then(result => {
+         return LOCK.unlock(for_id_wallet, key);
+      }).then(result => {
+         console.log('berhasil reset balance');
+      }).catch(error => {
+         //jika error lock harus dilepas
+         this.release_lock(from_id_wallet, key);
+         this.release_lock(for_id_wallet, key);
+         console.log(error);
+      })
+   }
+}
+
+
+//lock dilepas disini juga
+function reset_wallet(id_wallet, wallet_initial_balance, key){
+   return new Promise((resolve, reject) => {
       var reset_update = {
          balance: wallet_initial_balance
       };
@@ -36,5 +86,4 @@ module.exports.rollback_deposit = function(id_wallet, wallet_initial_balance, ke
          reject(error);
       });
    });
-};
-
+}
