@@ -24,7 +24,7 @@ function random_request(){
 
    }while(true);*/
 
-   for(var i = 0; i < 10000; i++){
+   for(var i = 0; i < 1000; i++){
       var index_transaction = Math.floor(Math.random() * list_transaction.length);
       var transaction = list_transaction[index_transaction];
       //var transaction = list_transaction[3];
@@ -72,7 +72,7 @@ function deposit(id_wallet, amount){
    axios.post(HOST + '/wallet/deposit', body).then(result => {
       console.log(result.data);
    }).catch(error => {
-      console.log(error);
+      console.log(error.message);
    });
 }
 
